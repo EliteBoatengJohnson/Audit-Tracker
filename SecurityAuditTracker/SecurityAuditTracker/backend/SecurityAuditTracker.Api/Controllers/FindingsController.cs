@@ -70,7 +70,7 @@ public class FindingsController : ControllerBase
             FrameworkReference = req.FrameworkReference,
             ControlReference = req.ControlReference,
             OwnerId = req.OwnerId,
-            DueDate = req.DueDate,
+            DueDate = req.DueDate.HasValue ? DateTime.SpecifyKind(req.DueDate.Value, DateTimeKind.Utc) : null,
             CreatedById = CurrentUserId
         };
 
@@ -95,7 +95,7 @@ public class FindingsController : ControllerBase
         finding.FrameworkReference = req.FrameworkReference;
         finding.ControlReference = req.ControlReference;
         finding.OwnerId = req.OwnerId;
-        finding.DueDate = req.DueDate;
+        finding.DueDate = req.DueDate.HasValue ? DateTime.SpecifyKind(req.DueDate.Value, DateTimeKind.Utc) : null;
 
         await _db.SaveChangesAsync();
         return NoContent();

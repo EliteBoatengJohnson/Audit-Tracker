@@ -2,17 +2,24 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Text.Json.Serialization;
 
 using SecurityAuditTracker.Api.Data;
 using SecurityAuditTracker.Api.Services;
 using Scalar.AspNetCore;
+using Microsoft.Extensions.Options;
 var builder = WebApplication.CreateBuilder(args);
 
 // --- Services ---
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 // builder.Services.AddEndpointsApiExplorer();
 // OpenAPI support is intentionally disabled here because the project does not reference the required ASP.NET Core OpenAPI package.
- builder.Services.AddOpenApi();
+builder.Services.AddOpenApi();
+
 // builder.Services.AddSwaggerGen(c =>
 // {
 //     c.SwaggerDoc("v1", new() { Title = "Security Audit Findings Tracker API", Version = "v1" });
@@ -58,7 +65,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowVueDev", policy =>
     {
-        policy.WithOrigins("http://localhost:5173")
+        policy.WithOrigins("http://localhost:5173", "http://127.0.0.1:5173")
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
@@ -68,14 +75,17 @@ var app = builder.Build();
 
 // --- Middleware pipeline ---
 if (app.Environment.IsDevelopment())
-{
-   app.MapOpenApi();
-   app.MapScalarApiReference(options =>
-   {
-       options.Title = "Security finding Tracker API";
-   }
-   );
+{   app.UseDeveloperExceptionPage();
+    app.MapOpenApi();
+    app.MapScalarApiReference(options =>
+    {
+    options.Title = "Security finding Tracker API";
+    }
+);
+
 }
+
+
 
 app.UseHttpsRedirection();
 app.UseCors("AllowVueDev");
