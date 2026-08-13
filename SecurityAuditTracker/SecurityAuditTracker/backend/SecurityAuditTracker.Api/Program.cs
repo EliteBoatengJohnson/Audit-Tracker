@@ -2,27 +2,30 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+
 using SecurityAuditTracker.Api.Data;
 using SecurityAuditTracker.Api.Services;
-
+using Scalar.AspNetCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // --- Services ---
 builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new() { Title = "Security Audit Findings Tracker API", Version = "v1" });
-    c.AddSecurityDefinition("Bearer", new()
-    {
-        Name = "Authorization",
-        Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey,
-        Scheme = "Bearer",
-        BearerFormat = "JWT",
-        In = Microsoft.OpenApi.Models.ParameterLocation.Header,
-        Description = "Enter: Bearer {your JWT token}"
-    });
-});
+// builder.Services.AddEndpointsApiExplorer();
+// OpenAPI support is intentionally disabled here because the project does not reference the required ASP.NET Core OpenAPI package.
+ builder.Services.AddOpenApi();
+// builder.Services.AddSwaggerGen(c =>
+// {
+//     c.SwaggerDoc("v1", new() { Title = "Security Audit Findings Tracker API", Version = "v1" });
+//     c.AddSecurityDefinition("Bearer", new()
+//     {
+//         Name = "Authorization",
+//         Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey,
+//         Scheme = "Bearer",
+//         BearerFormat = "JWT",
+//         In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+//         Description = "Enter: Bearer {your JWT token}"
+//     });
+// });
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -66,8 +69,12 @@ var app = builder.Build();
 // --- Middleware pipeline ---
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+   app.MapOpenApi();
+   app.MapScalarApiReference(options =>
+   {
+       options.Title = "Security finding Tracker API";
+   }
+   );
 }
 
 app.UseHttpsRedirection();
