@@ -87,7 +87,7 @@ if (app.Environment.IsDevelopment())
 
 
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseCors("AllowVueDev");
 app.UseAuthentication();
 app.UseAuthorization();
