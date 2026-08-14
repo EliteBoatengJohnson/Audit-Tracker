@@ -65,7 +65,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowVueDev", policy =>
     {
-        policy.WithOrigins("http://localhost:5173", "http://127.0.0.1:5173", "https://your-vercel-app.vercel.app")
+        policy.WithOrigins("http://localhost:5173", "http://127.0.0.1:5173", "https://audit-tracker-frontend.vercel.app")
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
@@ -75,11 +75,12 @@ var app = builder.Build();
 
 // --- Middleware pipeline ---
 if (app.Environment.IsDevelopment())
-{   app.UseDeveloperExceptionPage();
+{
+    app.UseDeveloperExceptionPage();
     app.MapOpenApi();
     app.MapScalarApiReference(options =>
     {
-    options.Title = "Security finding Tracker API";
+        options.Title = "Security finding Tracker API";
     }
 );
 
