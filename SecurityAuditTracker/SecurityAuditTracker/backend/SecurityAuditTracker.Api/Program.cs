@@ -74,8 +74,8 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 
 // --- Middleware pipeline ---
-if (app.Environment.IsDevelopment())
-{
+//if (app.Environment.IsDevelopment())
+
     app.UseDeveloperExceptionPage();
     app.MapOpenApi();
     app.MapScalarApiReference(options =>
@@ -84,7 +84,7 @@ if (app.Environment.IsDevelopment())
     }
 );
 
-}
+
 
 
 
