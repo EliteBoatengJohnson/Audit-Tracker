@@ -65,7 +65,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowVueDev", policy =>
     {
-        policy.WithOrigins("http://localhost:5173", "http://127.0.0.1:5173")
+        policy.WithOrigins("http://localhost:5173", "http://127.0.0.1:5173", "https://your-vercel-app.vercel.app")
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
